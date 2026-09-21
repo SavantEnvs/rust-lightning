@@ -1,0 +1,7 @@
+# Mayhem target: msg_reply_channel_range_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_reply_channel_range_target.
+project: savantenvs/rust-lightning
+target: msg_reply_channel_range_target
+
+cmds:
+  - cmd: /mayhem/msg_reply_channel_range_target
+    libfuzzer: true

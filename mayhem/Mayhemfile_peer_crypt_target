@@ -1,0 +1,7 @@
+# Mayhem target: peer_crypt_target (libFuzzer). Built by mayhem/build.sh to /mayhem/peer_crypt_target.
+project: savantenvs/rust-lightning
+target: peer_crypt_target
+
+cmds:
+  - cmd: /mayhem/peer_crypt_target
+    libfuzzer: true

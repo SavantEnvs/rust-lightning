@@ -1,0 +1,7 @@
+# Mayhem target: fromstr_to_netaddress_target (libFuzzer). Built by mayhem/build.sh to /mayhem/fromstr_to_netaddress_target.
+project: savantenvs/rust-lightning
+target: fromstr_to_netaddress_target
+
+cmds:
+  - cmd: /mayhem/fromstr_to_netaddress_target
+    libfuzzer: true

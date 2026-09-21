@@ -1,0 +1,7 @@
+# Mayhem target: msg_commitment_signed_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_commitment_signed_target.
+project: savantenvs/rust-lightning
+target: msg_commitment_signed_target
+
+cmds:
+  - cmd: /mayhem/msg_commitment_signed_target
+    libfuzzer: true
