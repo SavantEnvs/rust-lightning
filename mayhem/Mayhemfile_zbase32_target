@@ -1,0 +1,7 @@
+# Mayhem target: zbase32_target (libFuzzer). Built by mayhem/build.sh to /mayhem/zbase32_target.
+project: savantenvs/rust-lightning
+target: zbase32_target
+
+cmds:
+  - cmd: /mayhem/zbase32_target
+    libfuzzer: true

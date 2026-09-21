@@ -1,0 +1,7 @@
+# Mayhem target: bolt11_deser_target (libFuzzer). Built by mayhem/build.sh to /mayhem/bolt11_deser_target.
+project: savantenvs/rust-lightning
+target: bolt11_deser_target
+
+cmds:
+  - cmd: /mayhem/bolt11_deser_target
+    libfuzzer: true

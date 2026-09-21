@@ -1,0 +1,7 @@
+# Mayhem target: msg_update_fee_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_update_fee_target.
+project: savantenvs/rust-lightning
+target: msg_update_fee_target
+
+cmds:
+  - cmd: /mayhem/msg_update_fee_target
+    libfuzzer: true

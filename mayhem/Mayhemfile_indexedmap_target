@@ -1,0 +1,7 @@
+# Mayhem target: indexedmap_target (libFuzzer). Built by mayhem/build.sh to /mayhem/indexedmap_target.
+project: savantenvs/rust-lightning
+target: indexedmap_target
+
+cmds:
+  - cmd: /mayhem/indexedmap_target
+    libfuzzer: true

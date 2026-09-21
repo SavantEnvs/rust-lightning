@@ -1,0 +1,7 @@
+# Mayhem target: msg_tx_abort_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_tx_abort_target.
+project: savantenvs/rust-lightning
+target: msg_tx_abort_target
+
+cmds:
+  - cmd: /mayhem/msg_tx_abort_target
+    libfuzzer: true

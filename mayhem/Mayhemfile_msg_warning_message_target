@@ -1,0 +1,7 @@
+# Mayhem target: msg_warning_message_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_warning_message_target.
+project: savantenvs/rust-lightning
+target: msg_warning_message_target
+
+cmds:
+  - cmd: /mayhem/msg_warning_message_target
+    libfuzzer: true

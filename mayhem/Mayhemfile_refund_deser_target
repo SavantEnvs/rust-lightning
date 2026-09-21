@@ -1,0 +1,7 @@
+# Mayhem target: refund_deser_target (libFuzzer). Built by mayhem/build.sh to /mayhem/refund_deser_target.
+project: savantenvs/rust-lightning
+target: refund_deser_target
+
+cmds:
+  - cmd: /mayhem/refund_deser_target
+    libfuzzer: true

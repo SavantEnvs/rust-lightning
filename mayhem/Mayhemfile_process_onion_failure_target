@@ -1,0 +1,7 @@
+# Mayhem target: process_onion_failure_target (libFuzzer). Built by mayhem/build.sh to /mayhem/process_onion_failure_target.
+project: savantenvs/rust-lightning
+target: process_onion_failure_target
+
+cmds:
+  - cmd: /mayhem/process_onion_failure_target
+    libfuzzer: true

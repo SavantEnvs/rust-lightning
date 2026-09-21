@@ -1,0 +1,10 @@
+# Mayhem target: base32_target (libFuzzer). Built by mayhem/build.sh to /mayhem/base32_target.
+project: savantenvs/rust-lightning
+target: base32_target
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/base32_target/testsuite
+
+cmds:
+  - cmd: /mayhem/base32_target
+    libfuzzer: true

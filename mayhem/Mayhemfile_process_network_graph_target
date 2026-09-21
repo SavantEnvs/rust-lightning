@@ -1,0 +1,13 @@
+# Mayhem target: process_network_graph_target (libFuzzer). Built by mayhem/build.sh to /mayhem/process_network_graph_target.
+# Seeds: valid Rapid Gossip Sync blobs (v1/v2, mainnet chain hash) taken from upstream's own
+# lightning-rapid-gossip-sync tests, with latest_seen_timestamp set to 0xFFFFFFFF so they never
+# fall outside the "not older than two weeks" check against wall-clock time.
+project: savantenvs/rust-lightning
+target: process_network_graph_target
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/process_network_graph_target/testsuite
+
+cmds:
+  - cmd: /mayhem/process_network_graph_target
+    libfuzzer: true

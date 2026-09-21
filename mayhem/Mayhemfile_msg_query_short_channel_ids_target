@@ -1,0 +1,7 @@
+# Mayhem target: msg_query_short_channel_ids_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_query_short_channel_ids_target.
+project: savantenvs/rust-lightning
+target: msg_query_short_channel_ids_target
+
+cmds:
+  - cmd: /mayhem/msg_query_short_channel_ids_target
+    libfuzzer: true

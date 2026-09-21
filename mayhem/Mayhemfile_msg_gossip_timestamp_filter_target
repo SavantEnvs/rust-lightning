@@ -1,0 +1,7 @@
+# Mayhem target: msg_gossip_timestamp_filter_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_gossip_timestamp_filter_target.
+project: savantenvs/rust-lightning
+target: msg_gossip_timestamp_filter_target
+
+cmds:
+  - cmd: /mayhem/msg_gossip_timestamp_filter_target
+    libfuzzer: true

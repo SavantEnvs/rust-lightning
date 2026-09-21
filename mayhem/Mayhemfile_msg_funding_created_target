@@ -1,0 +1,7 @@
+# Mayhem target: msg_funding_created_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_funding_created_target.
+project: savantenvs/rust-lightning
+target: msg_funding_created_target
+
+cmds:
+  - cmd: /mayhem/msg_funding_created_target
+    libfuzzer: true

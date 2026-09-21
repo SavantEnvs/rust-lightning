@@ -1,0 +1,7 @@
+# Mayhem target: onion_message_target (libFuzzer). Built by mayhem/build.sh to /mayhem/onion_message_target.
+project: savantenvs/rust-lightning
+target: onion_message_target
+
+cmds:
+  - cmd: /mayhem/onion_message_target
+    libfuzzer: true
