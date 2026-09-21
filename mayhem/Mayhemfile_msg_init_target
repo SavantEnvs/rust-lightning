@@ -1,0 +1,7 @@
+# Mayhem target: msg_init_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_init_target.
+project: savantenvs/rust-lightning
+target: msg_init_target
+
+cmds:
+  - cmd: /mayhem/msg_init_target
+    libfuzzer: true

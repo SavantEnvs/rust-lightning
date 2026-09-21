@@ -1,0 +1,7 @@
+# Mayhem target: msg_shutdown_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_shutdown_target.
+project: savantenvs/rust-lightning
+target: msg_shutdown_target
+
+cmds:
+  - cmd: /mayhem/msg_shutdown_target
+    libfuzzer: true
