@@ -1,0 +1,7 @@
+# Mayhem target: payer_proof_deser_target (libFuzzer). Built by mayhem/build.sh to /mayhem/payer_proof_deser_target.
+project: savantenvs/rust-lightning
+target: payer_proof_deser_target
+
+cmds:
+  - cmd: /mayhem/payer_proof_deser_target
+    libfuzzer: true

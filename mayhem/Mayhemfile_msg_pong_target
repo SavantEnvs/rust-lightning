@@ -1,0 +1,7 @@
+# Mayhem target: msg_pong_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_pong_target.
+project: savantenvs/rust-lightning
+target: msg_pong_target
+
+cmds:
+  - cmd: /mayhem/msg_pong_target
+    libfuzzer: true

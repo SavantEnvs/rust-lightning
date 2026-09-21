@@ -1,0 +1,7 @@
+# Mayhem target: process_network_graph_target (libFuzzer). Built by mayhem/build.sh to /mayhem/process_network_graph_target.
+project: savantenvs/rust-lightning
+target: process_network_graph_target
+
+cmds:
+  - cmd: /mayhem/process_network_graph_target
+    libfuzzer: true

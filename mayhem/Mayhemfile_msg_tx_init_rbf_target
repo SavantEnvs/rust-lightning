@@ -1,0 +1,7 @@
+# Mayhem target: msg_tx_init_rbf_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_tx_init_rbf_target.
+project: savantenvs/rust-lightning
+target: msg_tx_init_rbf_target
+
+cmds:
+  - cmd: /mayhem/msg_tx_init_rbf_target
+    libfuzzer: true

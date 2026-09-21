@@ -1,0 +1,7 @@
+# Mayhem target: msg_tx_complete_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_tx_complete_target.
+project: savantenvs/rust-lightning
+target: msg_tx_complete_target
+
+cmds:
+  - cmd: /mayhem/msg_tx_complete_target
+    libfuzzer: true

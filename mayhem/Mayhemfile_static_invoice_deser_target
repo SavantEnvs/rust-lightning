@@ -1,0 +1,7 @@
+# Mayhem target: static_invoice_deser_target (libFuzzer). Built by mayhem/build.sh to /mayhem/static_invoice_deser_target.
+project: savantenvs/rust-lightning
+target: static_invoice_deser_target
+
+cmds:
+  - cmd: /mayhem/static_invoice_deser_target
+    libfuzzer: true

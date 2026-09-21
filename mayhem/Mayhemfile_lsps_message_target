@@ -1,0 +1,7 @@
+# Mayhem target: lsps_message_target (libFuzzer). Built by mayhem/build.sh to /mayhem/lsps_message_target.
+project: savantenvs/rust-lightning
+target: lsps_message_target
+
+cmds:
+  - cmd: /mayhem/lsps_message_target
+    libfuzzer: true

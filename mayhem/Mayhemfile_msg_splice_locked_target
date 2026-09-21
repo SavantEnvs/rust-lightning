@@ -1,0 +1,7 @@
+# Mayhem target: msg_splice_locked_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_splice_locked_target.
+project: savantenvs/rust-lightning
+target: msg_splice_locked_target
+
+cmds:
+  - cmd: /mayhem/msg_splice_locked_target
+    libfuzzer: true

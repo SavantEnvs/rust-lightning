@@ -1,0 +1,10 @@
+# Mayhem target: chanmon_consistency_target (libFuzzer). Built by mayhem/build.sh to /mayhem/chanmon_consistency_target.
+project: savantenvs/rust-lightning
+target: chanmon_consistency_target
+testsuite:
+  - https://$MAYHEM_DOMAIN/$MAYHEM_PROJECT/$MAYHEM_TARGET/testsuite.tar
+  - file://mayhem/chanmon_consistency_target/testsuite
+
+cmds:
+  - cmd: /mayhem/chanmon_consistency_target
+    libfuzzer: true

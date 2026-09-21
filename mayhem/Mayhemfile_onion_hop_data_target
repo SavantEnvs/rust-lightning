@@ -1,0 +1,7 @@
+# Mayhem target: onion_hop_data_target (libFuzzer). Built by mayhem/build.sh to /mayhem/onion_hop_data_target.
+project: savantenvs/rust-lightning
+target: onion_hop_data_target
+
+cmds:
+  - cmd: /mayhem/onion_hop_data_target
+    libfuzzer: true

@@ -1,0 +1,7 @@
+# Mayhem target: msg_revoke_and_ack_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_revoke_and_ack_target.
+project: savantenvs/rust-lightning
+target: msg_revoke_and_ack_target
+
+cmds:
+  - cmd: /mayhem/msg_revoke_and_ack_target
+    libfuzzer: true

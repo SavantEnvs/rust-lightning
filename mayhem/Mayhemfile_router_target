@@ -1,0 +1,7 @@
+# Mayhem target: router_target (libFuzzer). Built by mayhem/build.sh to /mayhem/router_target.
+project: savantenvs/rust-lightning
+target: router_target
+
+cmds:
+  - cmd: /mayhem/router_target
+    libfuzzer: true

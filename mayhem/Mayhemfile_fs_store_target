@@ -1,0 +1,7 @@
+# Mayhem target: fs_store_target (libFuzzer). Built by mayhem/build.sh to /mayhem/fs_store_target.
+project: savantenvs/rust-lightning
+target: fs_store_target
+
+cmds:
+  - cmd: /mayhem/fs_store_target
+    libfuzzer: true
