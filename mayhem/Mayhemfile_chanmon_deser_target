@@ -1,0 +1,7 @@
+# Mayhem target: chanmon_deser_target (libFuzzer). Built by mayhem/build.sh to /mayhem/chanmon_deser_target.
+project: savantenvs/rust-lightning
+target: chanmon_deser_target
+
+cmds:
+  - cmd: /mayhem/chanmon_deser_target
+    libfuzzer: true

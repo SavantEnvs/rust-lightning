@@ -1,0 +1,7 @@
+# Mayhem target: msg_open_channel_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_open_channel_target.
+project: savantenvs/rust-lightning
+target: msg_open_channel_target
+
+cmds:
+  - cmd: /mayhem/msg_open_channel_target
+    libfuzzer: true

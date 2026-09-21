@@ -1,0 +1,7 @@
+# Mayhem target: feature_flags_target (libFuzzer). Built by mayhem/build.sh to /mayhem/feature_flags_target.
+project: savantenvs/rust-lightning
+target: feature_flags_target
+
+cmds:
+  - cmd: /mayhem/feature_flags_target
+    libfuzzer: true

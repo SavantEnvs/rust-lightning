@@ -1,0 +1,7 @@
+# Mayhem target: msg_blinded_message_path_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_blinded_message_path_target.
+project: savantenvs/rust-lightning
+target: msg_blinded_message_path_target
+
+cmds:
+  - cmd: /mayhem/msg_blinded_message_path_target
+    libfuzzer: true

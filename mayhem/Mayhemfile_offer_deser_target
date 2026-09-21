@@ -1,0 +1,7 @@
+# Mayhem target: offer_deser_target (libFuzzer). Built by mayhem/build.sh to /mayhem/offer_deser_target.
+project: savantenvs/rust-lightning
+target: offer_deser_target
+
+cmds:
+  - cmd: /mayhem/offer_deser_target
+    libfuzzer: true

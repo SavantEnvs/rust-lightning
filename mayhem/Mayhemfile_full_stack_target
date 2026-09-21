@@ -1,0 +1,7 @@
+# Mayhem target: full_stack_target (libFuzzer). Built by mayhem/build.sh to /mayhem/full_stack_target.
+project: savantenvs/rust-lightning
+target: full_stack_target
+
+cmds:
+  - cmd: /mayhem/full_stack_target
+    libfuzzer: true

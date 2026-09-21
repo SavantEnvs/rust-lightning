@@ -1,0 +1,7 @@
+# Mayhem target: gossip_discovery_target (libFuzzer). Built by mayhem/build.sh to /mayhem/gossip_discovery_target.
+project: savantenvs/rust-lightning
+target: gossip_discovery_target
+
+cmds:
+  - cmd: /mayhem/gossip_discovery_target
+    libfuzzer: true

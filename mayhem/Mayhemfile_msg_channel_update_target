@@ -1,0 +1,7 @@
+# Mayhem target: msg_channel_update_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_channel_update_target.
+project: savantenvs/rust-lightning
+target: msg_channel_update_target
+
+cmds:
+  - cmd: /mayhem/msg_channel_update_target
+    libfuzzer: true

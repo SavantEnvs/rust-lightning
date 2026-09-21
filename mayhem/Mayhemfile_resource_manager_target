@@ -1,0 +1,7 @@
+# Mayhem target: resource_manager_target (libFuzzer). Built by mayhem/build.sh to /mayhem/resource_manager_target.
+project: savantenvs/rust-lightning
+target: resource_manager_target
+
+cmds:
+  - cmd: /mayhem/resource_manager_target
+    libfuzzer: true

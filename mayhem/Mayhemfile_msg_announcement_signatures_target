@@ -1,0 +1,7 @@
+# Mayhem target: msg_announcement_signatures_target (libFuzzer). Built by mayhem/build.sh to /mayhem/msg_announcement_signatures_target.
+project: savantenvs/rust-lightning
+target: msg_announcement_signatures_target
+
+cmds:
+  - cmd: /mayhem/msg_announcement_signatures_target
+    libfuzzer: true

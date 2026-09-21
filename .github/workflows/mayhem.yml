@@ -1,0 +1,194 @@
+# The Mayhem worker: build the commit image from mayhem/Dockerfile, push it to ghcr, then run
+# Mayhem over each Mayhemfile. Runs on manual dispatch and is called by the sync cron
+# (sync.yml) only when upstream actually moved — we fuzz on real upstream movement or an explicit
+# dispatch, NOT on every commit to the mayhem branch.
+# Three duration tiers:
+#   - 300s  (5 min)  manual dispatch / `/check` — a CONFIRMATION run that proves every target gets edges
+#                    in Mayhem (run-health). This is the integrated gate; kept short so /check is fast.
+#   - 1200s (20 min) the weekly sync cron (workflow_call) — regular bug-finding as upstream moves.
+#   - long  (4h+)    a deliberate DEEP-RUN pass: scripts/integration/deep-run.sh, or
+#                    gh workflow run mayhem.yml --ref mayhem -f duration=14400
+# Only the 5-min edges check gates `integrated`; 20m/4h are bug-finding, never required for integrated.
+# Fill in the `mayhemfile` matrix below. Needs the MAYHEM_TOKEN secret.
+name: Mayhem
+
+on:
+  workflow_dispatch:             # manual / `/check` run (gh workflow run mayhem.yml --ref mayhem [-f duration=14400])
+    inputs:
+      duration:
+        description: 'Fuzz seconds per target (default 300 = 5 min confirmation; e.g. 14400 = 4h deep run).'
+        type: string
+        required: false
+        default: '300'
+  workflow_call:                 # sync.yml calls this (only when upstream moved), passing the rebased SHA
+    inputs:
+      ref:
+        description: commit/branch to build (cron passes the freshly-rebased mayhem SHA)
+        type: string
+        required: false
+        default: ''
+      duration:                  # the weekly cron's regular bug-finding run: 20 min (deep-run requests longer)
+        description: fuzz seconds per target
+        type: string
+        required: false
+        default: '1200'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build:
+    name: build commit image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write          # push the commit image to ghcr.io/<org>/<repo>
+    steps:
+      # 75 targets, each statically linking lightning + the ASan runtime: the commit image is
+      # ~14 GB, which does not fit alongside the runner's preinstalled toolchains. Reclaim the
+      # ~25-30 GB those occupy before building.
+      - name: Free runner disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+                      /usr/local/share/boost /opt/hostedtoolcache/CodeQL || true
+          sudo docker image prune --all --force || true
+          df -h /
+
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0          # FULL history — the Dockerfile COPYs .git into /mayhem, so the image
+                                  # must hold a real copy of the `mayhem` branch (upstream history + the
+                                  # additive integration commit). The default depth-1 shallow clone bakes
+                                  # in a single squashed-looking commit and breaks the grader / PATCH tier.
+          ref: ${{ inputs.ref || github.sha }}     # build the cron's rebased SHA when called
+
+      - name: Resolve build SHA
+        id: sha
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Log in to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Image metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: type=raw,value=commit-${{ steps.sha.outputs.sha }}   # tag the exact built commit
+
+      - name: Build and push (mayhem/Dockerfile)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: mayhem/Dockerfile
+          push: true
+          build-args: |
+            COMMIT=${{ steps.sha.outputs.sha }}
+            REPO_URL=${{ github.server_url }}/${{ github.repository }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+    outputs:
+      image: ${{ steps.meta.outputs.tags }}
+      ref: ${{ steps.sha.outputs.sha }}
+
+  mayhem:
+    needs: build
+    name: 'fuzz ${{ matrix.mayhemfile }}'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 12          # 75 targets — throttle so one repo doesn't monopolise the runner pool
+      matrix:
+        mayhemfile:                 # one entry per mayhem/Mayhemfile_* (75 upstream fuzz targets:
+                                    # 74 from fuzz/fuzz-fake-hashes + chanmon_consistency from
+                                    # fuzz/fuzz-real-hashes — see mayhem/build.sh)
+          - mayhem/Mayhemfile_base32_target
+          - mayhem/Mayhemfile_bech32_parse_target
+          - mayhem/Mayhemfile_bolt11_deser_target
+          - mayhem/Mayhemfile_chanmon_consistency_target
+          - mayhem/Mayhemfile_chanmon_deser_target
+          - mayhem/Mayhemfile_feature_flags_target
+          - mayhem/Mayhemfile_fromstr_to_netaddress_target
+          - mayhem/Mayhemfile_fs_store_target
+          - mayhem/Mayhemfile_full_stack_target
+          - mayhem/Mayhemfile_gossip_discovery_target
+          - mayhem/Mayhemfile_indexedmap_target
+          - mayhem/Mayhemfile_invoice_deser_target
+          - mayhem/Mayhemfile_invoice_request_deser_target
+          - mayhem/Mayhemfile_lsps_message_target
+          - mayhem/Mayhemfile_msg_accept_channel_target
+          - mayhem/Mayhemfile_msg_accept_channel_v2_target
+          - mayhem/Mayhemfile_msg_announcement_signatures_target
+          - mayhem/Mayhemfile_msg_blinded_message_path_target
+          - mayhem/Mayhemfile_msg_channel_announcement_target
+          - mayhem/Mayhemfile_msg_channel_details_target
+          - mayhem/Mayhemfile_msg_channel_ready_target
+          - mayhem/Mayhemfile_msg_channel_reestablish_target
+          - mayhem/Mayhemfile_msg_channel_update_target
+          - mayhem/Mayhemfile_msg_closing_complete_target
+          - mayhem/Mayhemfile_msg_closing_sig_target
+          - mayhem/Mayhemfile_msg_closing_signed_target
+          - mayhem/Mayhemfile_msg_commitment_signed_target
+          - mayhem/Mayhemfile_msg_decoded_onion_error_packet_target
+          - mayhem/Mayhemfile_msg_error_message_target
+          - mayhem/Mayhemfile_msg_funding_created_target
+          - mayhem/Mayhemfile_msg_funding_signed_target
+          - mayhem/Mayhemfile_msg_gossip_timestamp_filter_target
+          - mayhem/Mayhemfile_msg_init_target
+          - mayhem/Mayhemfile_msg_node_announcement_target
+          - mayhem/Mayhemfile_msg_open_channel_target
+          - mayhem/Mayhemfile_msg_open_channel_v2_target
+          - mayhem/Mayhemfile_msg_ping_target
+          - mayhem/Mayhemfile_msg_pong_target
+          - mayhem/Mayhemfile_msg_query_channel_range_target
+          - mayhem/Mayhemfile_msg_query_short_channel_ids_target
+          - mayhem/Mayhemfile_msg_reply_channel_range_target
+          - mayhem/Mayhemfile_msg_reply_short_channel_ids_end_target
+          - mayhem/Mayhemfile_msg_revoke_and_ack_target
+          - mayhem/Mayhemfile_msg_shutdown_target
+          - mayhem/Mayhemfile_msg_splice_ack_target
+          - mayhem/Mayhemfile_msg_splice_init_target
+          - mayhem/Mayhemfile_msg_splice_locked_target
+          - mayhem/Mayhemfile_msg_stfu_target
+          - mayhem/Mayhemfile_msg_tx_abort_target
+          - mayhem/Mayhemfile_msg_tx_ack_rbf_target
+          - mayhem/Mayhemfile_msg_tx_add_input_target
+          - mayhem/Mayhemfile_msg_tx_add_output_target
+          - mayhem/Mayhemfile_msg_tx_complete_target
+          - mayhem/Mayhemfile_msg_tx_init_rbf_target
+          - mayhem/Mayhemfile_msg_tx_remove_input_target
+          - mayhem/Mayhemfile_msg_tx_remove_output_target
+          - mayhem/Mayhemfile_msg_tx_signatures_target
+          - mayhem/Mayhemfile_msg_update_add_htlc_target
+          - mayhem/Mayhemfile_msg_update_fail_htlc_target
+          - mayhem/Mayhemfile_msg_update_fail_malformed_htlc_target
+          - mayhem/Mayhemfile_msg_update_fee_target
+          - mayhem/Mayhemfile_msg_update_fulfill_htlc_target
+          - mayhem/Mayhemfile_msg_warning_message_target
+          - mayhem/Mayhemfile_offer_deser_target
+          - mayhem/Mayhemfile_onion_hop_data_target
+          - mayhem/Mayhemfile_onion_message_target
+          - mayhem/Mayhemfile_payer_proof_deser_target
+          - mayhem/Mayhemfile_peer_crypt_target
+          - mayhem/Mayhemfile_process_network_graph_target
+          - mayhem/Mayhemfile_process_onion_failure_target
+          - mayhem/Mayhemfile_refund_deser_target
+          - mayhem/Mayhemfile_resource_manager_target
+          - mayhem/Mayhemfile_router_target
+          - mayhem/Mayhemfile_static_invoice_deser_target
+          - mayhem/Mayhemfile_zbase32_target
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.ref }}
+      - name: Start analysis for ${{ matrix.mayhemfile }}
+        uses: ForAllSecure/mcode-action@v1
+        with:
+          mayhem-token: ${{ secrets.MAYHEM_TOKEN }}
+          args: --image ${{ needs.build.outputs.image }} --file ${{ matrix.mayhemfile }} --duration ${{ inputs.duration || '1200' }}
